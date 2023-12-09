@@ -2,12 +2,7 @@
 <template>
   <div class="input-wrapper">
     <label :for="inputId" class="input-label">{{ label }}</label>
-    <input
-      :type="type"
-      :id="inputId"
-      v-model="inputValue"
-      class="input-field"
-    />
+    <input :type="type" :id="inputId" :value="inputRef" class="input-field" />
     <p v-if="showError" class="error-message">{{ errorMessage }}</p>
   </div>
 </template>
@@ -34,33 +29,36 @@ export default {
       default: '',
     },
   },
+  emits: ['update:value'],
   setup(props, {emit}) {
     const inputId = `input_${Math.random().toString(36).substring(2)}`;
-    const propsX = toRef(props);
-    const propsY = reactive(propsX);
-
-    console.log('propsY', propsY);
-    const inputValue = ref(props.value);
-    const errorMessage = toRef(props.error);
+    const inputRef = toRef(props, 'value');
+    const errorRef = toRef(props, 'error');
 
     // Emit input changes
-    watch(inputValue, (newValue) => {
-      emit('update:value', newValue);
-      console.log('sadas', newValue);
-    });
+    // watch(inputRef, (newValue) => {
+    //   emit('update:value', newValue);
+    // });
+    // Emit input changes
+    // const updateValue = (value) => {
+    //   console.log(value);
+    //   inputRef.value = value;
+    //   emit('update:value', value);
+    // };
 
+    // Watch for changes in the error prop
     watch(
       () => props.error,
       (newError) => {
-        errorMessage.value = newError;
+        errorRef.value = newError;
       }
     );
 
     return {
       inputId,
-      inputValue,
-      showError: props.error !== '',
-      errorMessage: props.error,
+      inputRef,
+      showError: errorRef !== '',
+      errorMessage: errorRef,
     };
   },
 };
