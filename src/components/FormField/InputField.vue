@@ -2,8 +2,16 @@
 <template>
   <div class="input-wrapper">
     <label :for="inputId" class="input-label">{{ label }}</label>
-    <input :type="type" :id="inputId" :value="inputRef" class="input-field" />
+    <input
+      :type="type"
+      :id="inputId"
+      class="input-field"
+      :placeholder="placeholderRef"
+      :value="modelValue"
+      @input="updateInputValue"
+    />
     <p v-if="showError" class="error-message">{{ errorMessage }}</p>
+    <p class="error-message">{{ modelValue }}</p>
   </div>
 </template>
 
@@ -15,6 +23,10 @@ export default {
     label: {
       type: String,
       required: true,
+    },
+    placeholder: {
+      type: String,
+      default: '',
     },
     type: {
       type: String,
@@ -29,34 +41,18 @@ export default {
       default: '',
     },
   },
-  emits: ['update:value'],
   setup(props, {emit}) {
     const inputId = `input_${Math.random().toString(36).substring(2)}`;
-    const inputRef = toRef(props, 'value');
     const errorRef = toRef(props, 'error');
+    const placeholderRef = ref(props.placeholder);
 
-    // Emit input changes
-    // watch(inputRef, (newValue) => {
-    //   emit('update:value', newValue);
-    // });
-    // Emit input changes
-    // const updateValue = (value) => {
-    //   console.log(value);
-    //   inputRef.value = value;
-    //   emit('update:value', value);
-    // };
-
-    // Watch for changes in the error prop
-    watch(
-      () => props.error,
-      (newError) => {
-        errorRef.value = newError;
-      }
-    );
+    const updateInputValue = (event) => {
+      emit('update:modelValue', event.target.value);
+    };
 
     return {
       inputId,
-      inputRef,
+      placeholderRef,
       showError: errorRef !== '',
       errorMessage: errorRef,
     };
@@ -76,11 +72,20 @@ export default {
 }
 
 .input-field {
-  width: 100%;
-  padding: 8px;
+  width: calc(100% - 24px);
+  padding: 12px;
   font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: none;
+  border-radius: 10px;
+  background-color: #224957;
+  opacity: 1;
+}
+.input-field:focus {
+  outline: none;
+  opacity: 0.8;
+}
+.input-field:hover {
+  opacity: 0.8;
 }
 
 .error-message {

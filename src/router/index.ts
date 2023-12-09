@@ -7,7 +7,7 @@ const routes = [
   {
     path: '/feature',
     name: 'Home',
-    component: Landing,
+    component: Home,
   },
   {
     path: '/benefits',

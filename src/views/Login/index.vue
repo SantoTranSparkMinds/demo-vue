@@ -1,11 +1,10 @@
 <template>
-  <LoginForm />
+  <LoginContainer />
 </template>
 
 <script lang="ts">
 import {onMounted, defineComponent} from 'vue';
-import Header from './Header.vue';
-import LoginForm from './LoginForm.vue';
+import LoginContainer from './LoginContainer.vue';
 export default defineComponent({
   setup() {
     onMounted(() => {});
@@ -13,8 +12,7 @@ export default defineComponent({
     return {};
   },
   components: {
-    Header,
-    LoginForm,
+    LoginContainer,
   },
 });
 </script>
