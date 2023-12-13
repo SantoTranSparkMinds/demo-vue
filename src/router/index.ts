@@ -2,6 +2,7 @@ import {createRouter, createWebHistory} from 'vue-router';
 import Home from '../views/Home/index.vue'; // Import your views or components
 import Landing from '../views/LandingPage/index.vue'; // Import your views or components
 import Login from '../views/Login/index.vue'; // Import your views or components
+import Market from '../views/Market/index.vue'; // Import your views or components
 
 const routes = [
   {
@@ -15,9 +16,14 @@ const routes = [
     component: Landing,
   },
   {
-    path: '/news',
+    path: '/login',
     name: 'Login',
     component: Login,
+  },
+  {
+    path: '/testimonital',
+    name: 'Testimonital',
+    component: Market,
   },
 ];
 

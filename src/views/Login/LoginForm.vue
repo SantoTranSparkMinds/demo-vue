@@ -1,10 +1,10 @@
 <template>
   <div class="login-form-wrapepr">
-    <form @submit.prevent="login" class="login-form">
+    <form @submit.prevent="handleLogin" class="login-form">
       <InputField
         label="Username"
         v-model="username"
-        :error="usernameError"
+        :error="errors.username"
         :placeholder="'Username'"
       ></InputField>
 
@@ -12,82 +12,106 @@
         label="Password"
         type="password"
         v-model="password"
-        :error="passwordError"
+        :error="errors.password"
         :placeholder="'Password'"
       ></InputField>
 
-      <button class="login-button" type="submit">Login</button>
-      <p v-if="loginError" class="error-message">{{ loginError }}</p>
+      <Button
+        class="bg-[#4759f9] rounded-[10px] w-full border-none hover:opacity-80 focus:outline-none h-[42px]"
+        label="Login"
+        type="submit"
+      />
     </form>
+    <DialogError
+      :title="title"
+      :message="message"
+      :visibleDialog="visibleDialog"
+      @onCancelDialog="hideDialog()"
+    />
   </div>
 </template>
 
 <script>
 import {ref} from 'vue';
+import {onMounted, defineComponent} from 'vue';
+import {useForm} from 'vee-validate';
+import {toTypedSchema} from '@vee-validate/yup';
+import * as yup from 'yup';
 import InputField from '../../components/FormField/InputField.vue';
+import DialogError from '../../components/common/DialogError.vue';
 import router from '../../router';
+import Button from 'primevue/button';
+import Dialog from 'primevue/dialog';
+import {useUserStore} from '../../stores/user';
+import {useDialog} from '../../hooks/useDialog';
 
-export default {
-  setup() {
-    const username = ref('');
-    const password = ref('');
-    const usernameError = ref('');
-    const passwordError = ref('');
-    const loginError = ref('');
+export default defineComponent({
+  props: {
+    login: {
+      type: Function,
+      required: true,
+    },
+  },
+  setup(props) {
+    const user = useUserStore();
+    const {isVisible, showDialog, hideDialog} = useDialog();
+    const title = ref('');
+    const message = ref('');
+    const {errors, defineField, handleSubmit} = useForm({
+      validationSchema: toTypedSchema(
+        yup.object({
+          username: yup.string().required('Username is a required field'),
+          password: yup
+            .string()
+            .required('Password is a required field')
+            .min(6, 'Password must be at least 6 characters'),
+        })
+      ),
+    });
+    const [username, usernameAttrs] = defineField('username');
+    const [password, passwordAttrs] = defineField('password');
 
-    const login = () => {
-      console.log('username.value', username.value);
-      // setTimeout(() => {
-      //   router.push({name: 'Landing'});
-      // }, 500);
+    const handleLogin = handleSubmit(async () => {
+      const response = await user.login(username.value, password.value);
 
-      if (username.value === '') {
-        usernameError.value = 'Username is required';
+      if (response.isLoggedIn) {
+        props.login();
+        hideDialog();
+      } else {
+        showDialog();
+        title.value = 'Login Failed';
+        message.value = 'Your username or password is incorrect';
       }
-
-      if (password.value === '') {
-        passwordError.value = 'Password is required';
-      }
-
-      if (usernameError.value === '' && passwordError.value === '') {
-        loginError.value = 'Invalid username or password';
-      }
-    };
+    });
 
     return {
       username,
       password,
-      usernameError,
-      passwordError,
-      loginError,
-      login,
+      errors,
+      handleLogin,
+      visibleDialog: isVisible,
+      title,
+      message,
+      hideDialog,
     };
   },
   components: {
     InputField,
+    Button,
+    Dialog,
+    DialogError,
   },
-};
+});
 </script>
 
 <style scoped>
 .login-form-wrapepr {
-  width: 100%;
+  width: 25%;
 }
-.error-message {
-  margin-top: 5px;
-  color: red;
-  font-size: 14px;
-}
+
 .login-form {
   width: 100%;
   display: flex;
   flex-direction: column;
-}
-.login-button {
-  width: 100%;
-  border-radius: 10px;
-  background: #20df7f;
-
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.3);
 }
 </style>

@@ -1,14 +1,12 @@
 <template>
   <Header />
-  <ComponentOne />
-  <ComponentTwo />
+  <MarketTable />
 </template>
 
 <script lang="ts">
 import {onMounted, defineComponent} from 'vue';
 import Header from '../../components/common/Header.vue';
-import ComponentOne from './ComponentOne.vue';
-import ComponentTwo from './ComponentTwo.vue';
+import MarketTable from './MarketTable.vue';
 export default defineComponent({
   setup() {
     onMounted(() => {});
@@ -17,8 +15,7 @@ export default defineComponent({
   },
   components: {
     Header,
-    ComponentOne,
-    ComponentTwo,
+    MarketTable,
   },
 });
 </script>

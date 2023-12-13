@@ -20,7 +20,9 @@
             menu.label
           }}</span> -->
         </div>
-        <button class="download">Dowload</button>
+        <router-link :to="'login'" class="download">{{
+          user.isLoggedIn ? 'Logout' : 'Login'
+        }}</router-link>
       </div>
     </div>
   </div>
@@ -29,9 +31,12 @@
 <script lang="ts">
 import {onMounted, defineComponent} from 'vue';
 import MyLogo from '../../assets/svg/vue.svg';
+import {useUserStore} from '../../stores/user';
 
 export default defineComponent({
   setup() {
+    const user = useUserStore();
+
     const menus = [
       {label: 'Feature', value: 'feature', link: 'feature'},
       {label: 'Benefits', value: 'benefits', link: 'benefits'},
@@ -47,6 +52,7 @@ export default defineComponent({
     return {
       menus,
       myIcon,
+      user,
     };
   },
 });
@@ -59,6 +65,7 @@ export default defineComponent({
   background-color: #ffffff;
   border-bottom: 1px solid #000000;
   position: fixed;
+  top: 0;
 }
 .header-container {
   display: flex;
@@ -108,5 +115,6 @@ export default defineComponent({
   color: #ffffff;
   font-size: 16px;
   font-weight: 600;
+  border-radius: 8px;
 }
 </style>

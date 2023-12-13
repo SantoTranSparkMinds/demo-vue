@@ -4,7 +4,7 @@
       <div class="left_side">
         <div class="title">
           <span class="tag">New</span>
-          <span class="memo">Download and enjoy!</span>
+          <span class="memo">{{ user.user || 'Download and enjoy!' }}</span>
         </div>
         <div class="content">
           <span class="message"
@@ -33,15 +33,18 @@
 <script lang="ts">
 import {onMounted, defineComponent} from 'vue';
 import myImagePath from '../../assets/images/phone_ads.png';
+import {useUserStore} from '../../stores/user';
 
 export default defineComponent({
   setup() {
+    const user = useUserStore();
     const myPhoneImg = myImagePath;
 
     onMounted(() => {});
 
     return {
       myPhoneImg,
+      user,
     };
   },
 });
@@ -104,7 +107,7 @@ export default defineComponent({
 .right_side {
   width: 50%;
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
 }
 .image {
   width: 80%;

@@ -3,7 +3,6 @@
   <div class="input-wrapper">
     <label :for="inputId" class="input-label">{{ label }}</label>
     <input
-      :type="type"
       :id="inputId"
       class="input-field"
       :placeholder="placeholderRef"
@@ -11,15 +10,15 @@
       @input="updateInputValue"
     />
     <p v-if="showError" class="error-message">{{ errorMessage }}</p>
-    <p class="error-message">{{ modelValue }}</p>
   </div>
 </template>
 
-<script>
-import {ref, watch, toRef, reactive} from 'vue';
+<script lang="ts">
+import {ref, toRef} from 'vue';
 
 export default {
   props: {
+    modelValue: String,
     label: {
       type: String,
       required: true,
@@ -42,19 +41,20 @@ export default {
     },
   },
   setup(props, {emit}) {
-    const inputId = `input_${Math.random().toString(36).substring(2)}`;
+    const inputId = 'input_${Math.random().toString(36).substring(2)}';
     const errorRef = toRef(props, 'error');
     const placeholderRef = ref(props.placeholder);
 
-    const updateInputValue = (event) => {
+    const updateInputValue = (event: any) => {
       emit('update:modelValue', event.target.value);
     };
 
     return {
       inputId,
       placeholderRef,
-      showError: errorRef !== '',
+      showError: errorRef.value !== '',
       errorMessage: errorRef,
+      updateInputValue,
     };
   },
 };
@@ -69,16 +69,18 @@ export default {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
+  color: #333333;
 }
 
 .input-field {
-  width: calc(100% - 24px);
+  width: 100%;
   padding: 12px;
   font-size: 16px;
   border: none;
   border-radius: 10px;
-  background-color: #224957;
+  background-color: #fafafa;
   opacity: 1;
+  color: #000000;
 }
 .input-field:focus {
   outline: none;
